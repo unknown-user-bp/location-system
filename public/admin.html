@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #111827, #1d4ed8);
+      color: white;
+      min-height: 100vh;
+      padding: 28px 16px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .title-wrap h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+
+    .title-wrap p {
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0;
+    }
+
+    .refresh-btn {
+      border: none;
+      background: white;
+      color: #111827;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.25s ease;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 14px 14px;
+      text-align: left;
+    }
+
+    thead th {
+      font-size: 14px;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    td {
+      font-size: 15px;
+      color: white;
+    }
+
+    .map-link {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #bfdbfe;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px 10px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 16px;
+    }
+
+    .count-box {
+      margin-bottom: 18px;
+      color: #dbeafe;
+      font-size: 15px;
+    }
+
+    @media (max-width: 640px) {
+      .title-wrap h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="title-wrap">
+        <h1>Admin Dashboard</h1>
+        <p>View all submitted user locations</p>
+      </div>
+      <button class="refresh-btn" onclick="load()">Refresh</button>
+    </div>
+
+    <div class="card">
+      <div class="count-box" id="countBox">Loading records...</div>
+      <div id="data"></div>
+    </div>
+  </div>
+
+  <script>
+    async function load() {
+      const dataBox = document.getElementById("data");
+      const countBox = document.getElementById("countBox");
+
+      try {
+        const res = await fetch("/locations");
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+          countBox.innerHTML = "Total Records: 0";
+          dataBox.innerHTML = `<div class="empty">No locations found yet.</div>`;
+          return;
+        }
+
+        countBox.innerHTML = `Total Records: ${data.length}`;
+
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Time</th>
+                <th>Map</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        data.forEach((item, index) => {
+          html += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.latitude}</td>
+              <td>${item.longitude}</td>
+              <td>${item.time || "-"}</td>
+              <td>
+                <a class="map-link" href="https://maps.google.com/?q=${item.latitude},${item.longitude}" target="_blank">
+                  Open Map
+                </a>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        dataBox.innerHTML = html;
+      } catch (error) {
+        countBox.innerHTML = "Error";
+        dataBox.innerHTML = `<div class="empty">Failed to load location data.</div>`;
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

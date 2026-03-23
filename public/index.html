@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Location Share</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
+      padding: 20px;
+      color: white;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 14px 26px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.25s ease;
+      min-width: 130px;
+    }
+
+    .yes-btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+    }
+
+    .yes-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.45);
+    }
+
+    .no-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .no-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .status-box {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      line-height: 1.7;
+      font-size: 15px;
+      word-break: break-word;
+      min-height: 64px;
+    }
+
+    .status-box a {
+      color: #bfdbfe;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .status-box a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 520px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      .card {
+        padding: 24px 18px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">Location Permission</div>
+    <h1>Share Your Location</h1>
+    <p>
+      Press <b>Yes</b> to share your current location.  
+      Press <b>No</b> if you do not want to share it.
+    </p>
+
+    <div class="btn-group">
+      <button class="yes-btn" onclick="share()">Yes, Share</button>
+      <button class="no-btn" onclick="deny()">No, Thanks</button>
+    </div>
+
+    <div class="status-box" id="msg">Waiting for your response...</div>
+  </div>
+
+  <script>
+    function share() {
+      const msg = document.getElementById("msg");
+
+      if (!navigator.geolocation) {
+        msg.innerHTML = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      msg.innerHTML = "Getting your location...";
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          try {
+            await fetch("/save-location", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                latitude: lat,
+                longitude: lon
+              })
+            });
+
+            msg.innerHTML = `
+              Location shared successfully.<br><br>
+              <b>Latitude:</b> ${lat}<br>
+              <b>Longitude:</b> ${lon}<br><br>
+              <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
+                Open in Google Maps
+              </a>
+            `;
+          } catch (error) {
+            msg.innerHTML = "Failed to send location to server.";
+          }
+        },
+        (error) => {
+          msg.innerHTML = "Location permission denied or failed.";
+        }
+      );
+    }
+
+    function deny() {
+      document.getElementById("msg").innerHTML = "You chose not to share your location.";
+    }
+  </script>
+</body>
+</html>
