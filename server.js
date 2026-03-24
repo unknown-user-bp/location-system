@@ -4,31 +4,49 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
-const savedLocations = [];
+const savedEvents = [];
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/save-location", (req, res) => {
-  const { latitude, longitude } = req.body;
+  const {
+    latitude = null,
+    longitude = null,
+    accuracy = null,
+    action = null,
+    status = "unknown",
+    note = ""
+  } = req.body || {};
 
-  if (latitude == null || longitude == null) {
-    return res.status(400).json({ success: false, message: "Missing location data" });
-  }
-
-  savedLocations.push({
+  const newEntry = {
+    id: savedEvents.length + 1,
     latitude,
     longitude,
+    accuracy,
+    action,
+    status,
+    note,
     time: new Date().toLocaleString()
-  });
+  };
 
-  res.json({ success: true });
+  savedEvents.unshift(newEntry);
+
+  res.json({
+    success: true,
+    message: "Event saved successfully.",
+    data: newEntry
+  });
 });
 
 app.get("/locations", (req, res) => {
-  res.json(savedLocations);
+  res.json({
+    success: true,
+    total: savedEvents.length,
+    data: savedEvents
+  });
 });
 
 app.listen(PORT, () => {
-  console.log("Server running at http://localhost:3000");
+  console.log(`Server running at http://localhost:${PORT}`);
 });
